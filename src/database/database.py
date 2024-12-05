@@ -11,7 +11,6 @@ load_dotenv(dotenv_path=dotenv_path)
 
 # Obtener la URL de la base de datos del archivo .env
 DATABASE_URL = os.getenv("DATABASE_URL")
-print(f"Database URL: {DATABASE_URL}")  # Verifica que se carga correctamente
 
 # Crear el motor de la base de datos
 engine = create_async_engine(DATABASE_URL, echo=True)
@@ -27,5 +26,3 @@ SessionLocal = sessionmaker(
 async def get_db():
     async with SessionLocal() as session:
         yield session
-
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))
