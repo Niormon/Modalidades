@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from src.routes.studentRoutes import STUDENT_ROUTES
 from src.routes.institutionRoutes import INSTITUTION_ROUTES
+from src.routes.modalityRoutes import MODALITY_ROUTES
 
 app = FastAPI()
 
@@ -12,3 +13,5 @@ async def root():
 app.include_router(STUDENT_ROUTES)
 
 app.include_router(INSTITUTION_ROUTES)
+
+app.include_router(MODALITY_ROUTES)
