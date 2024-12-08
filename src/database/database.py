@@ -2,18 +2,22 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 # Cargar variables de entorno desde el archivo .env
-# Especificar la ruta al archivo .env en la raíz del proyecto
-dotenv_path = Path(__file__).resolve().parent.parent.parent / '.env'  # Subir tres niveles para llegar a la raíz
-load_dotenv(dotenv_path=dotenv_path)
+load_dotenv()
 
 # Obtener la URL de la base de datos del archivo .env
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL no está definido en el archivo .env")
+
 # Crear el motor de la base de datos
 engine = create_async_engine(DATABASE_URL, echo=True)
+
+# Crear la base declarativa para los modelos
+Base = declarative_base()
 
 # Crear la sesión asíncrona
 SessionLocal = sessionmaker(

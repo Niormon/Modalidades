@@ -1,16 +1,14 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String, Boolean, Date
+from src.database.database import Base
 
 class Estudiante(Base):
     __tablename__ = 'estudiante'
 
     id = Column(Integer, primary_key=True, index=True)
-    codigo = Column(String, unique=True, index=True)
-    nombre = Column(String)
-    cedula = Column(String, unique=True)
-    correo = Column(String)
-    numero_telefonico = Column(String)
+    codigo = Column(String(20), unique=True, nullable=False)
+    nombre = Column(String(100), nullable=False)
+    cedula = Column(String(20), unique=True, nullable=False)
+    correo = Column(String(100), nullable=False)
+    numero_telefonico = Column(String(15))
     fecha_nacimiento = Column(Date)
     estudiante_graduado = Column(Boolean, default=False)
