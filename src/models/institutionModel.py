@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.orm import relationship
 from src.database.database import Base
 
 class Institution(Base):
@@ -10,3 +11,9 @@ class Institution(Base):
     numero_telefonico = Column(String(15))
     correo = Column(String(100))
 
+    # Relación inversa con TrackingMode
+    tracking_modes = relationship(
+        "TrackingMode",
+        back_populates="institution",
+        cascade="all, delete-orphan"
+    )

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date
+from sqlalchemy.orm import relationship
 from src.database.database import Base
 
 class Estudiante(Base):
@@ -12,3 +13,6 @@ class Estudiante(Base):
     numero_telefonico = Column(String(15))
     fecha_nacimiento = Column(Date)
     estudiante_graduado = Column(Boolean, default=False)
+
+    # Relación inversa con TrackingMode
+    tracking_modes = relationship("TrackingMode", back_populates="student", cascade="all, delete-orphan")
