@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import date
 from typing import Optional
 
-# Esquema para la creación de un estudiante
+# Esquema para la creación de un student
 class StudentCreate(BaseModel):
     codigo: str
     nombre: str
@@ -10,12 +10,12 @@ class StudentCreate(BaseModel):
     correo: str
     numero_telefonico: str
     fecha_nacimiento: date
-    estudiante_graduado: bool = False
+    estudiante_graduado : bool = False
 
     class Config:
         orm_mode = True
 
-# Esquema para la respuesta de un estudiante
+# Esquema para la respuesta de un student
 class StudentResponse(BaseModel):
     id: int
     codigo: str
@@ -24,12 +24,12 @@ class StudentResponse(BaseModel):
     correo: str
     numero_telefonico: str
     fecha_nacimiento: date
-    estudiante_graduado: bool
+    estudiante_graduado : bool
 
     class Config:
         orm_mode = True
 
-# Esquema para la actualización de un estudiante
+# Esquema para la actualización de un student
 class StudentUpdate(BaseModel):
     codigo: Optional[str]
     nombre: Optional[str]
@@ -37,7 +37,7 @@ class StudentUpdate(BaseModel):
     correo: Optional[str]
     numero_telefonico: Optional[str]
     fecha_nacimiento: Optional[date]
-    estudiante_graduado: Optional[bool]
+    estudiante_graduado : Optional[bool]
 
     class Config:
         from_attributes = True  # O 'orm_mode' dependiendo de la versión de Pydantic

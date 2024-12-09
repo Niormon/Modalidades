@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from src.models.trackingModeModel import TrackingMode
 
 from src.models.modalityModel import Modality
-from src.models.studentModel import Estudiante as Student
+from src.models.studentModel import Student
 from src.models.teacherModel import Teacher
 from src.models.institutionModel import Institution
 

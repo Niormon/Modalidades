@@ -42,7 +42,7 @@ class StudentBase(BaseModel):
     correo: str
     numero_telefonico: str
     fecha_nacimiento: date
-    estudiante_graduado: bool
+    estudiante_graduado : bool
     
     class Config:
         from_attributes = True

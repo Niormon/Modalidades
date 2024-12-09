@@ -1,15 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update, delete
-from src.models.studentModel import Estudiante
+from src.models.studentModel import Student
 from src.schemas.studentSchema import StudentCreate, StudentUpdate
 from fastapi import HTTPException
 
-# Crear un estudiante
+# Crear un student
 async def create_student(db: AsyncSession, student: StudentCreate):
-    # Verificar si ya existe un estudiante con el mismo código o cédula
-    existing_student = await db.execute(select(Estudiante).filter(
-        (Estudiante.codigo == student.codigo) | (Estudiante.cedula == student.cedula)
+    # Verificar si ya existe un student con el mismo código o cédula
+    existing_student = await db.execute(select(Student).filter(
+        (Student.codigo == student.codigo) | (Student.cedula == student.cedula)
     ))
     existing_student = existing_student.scalars().first()
     
@@ -19,57 +19,57 @@ async def create_student(db: AsyncSession, student: StudentCreate):
             detail="El código o la cédula ya están en uso."
         )
     
-    # Si no hay duplicados, proceder a crear el estudiante
-    db_student = Estudiante(
+    # Si no hay duplicados, proceder a crear el student
+    db_student = Student(
         codigo=student.codigo,
         nombre=student.nombre,
         cedula=student.cedula,
         correo=student.correo,
         numero_telefonico=student.numero_telefonico,
         fecha_nacimiento=student.fecha_nacimiento,
-        estudiante_graduado=student.estudiante_graduado,
+        estudiante_graduado =student.estudiante_graduado ,
     )
     db.add(db_student)
     await db.commit()
     return db_student
 
-# Obtener todos los estudiantes
+# Obtener todos los students
 async def get_students(db: AsyncSession, skip: int = 0, limit: int = 10):
-    result = await db.execute(select(Estudiante).offset(skip).limit(limit))
+    result = await db.execute(select(Student).offset(skip).limit(limit))
     students = result.scalars().all()
     return students
 
-# Obtener un estudiante por ID
+# Obtener un student por ID
 async def get_student_by_id(db: AsyncSession, student_id: int):
-    result = await db.execute(select(Estudiante).filter(Estudiante.id == student_id))
+    result = await db.execute(select(Student).filter(Student.id == student_id))
     student = result.scalars().first()
     return student
 
-# Actualizar un estudiante
+# Actualizar un student
 async def update_student(db: AsyncSession, student_id: int, student_data: StudentUpdate):
-    # Verificar si el estudiante existe
-    result = await db.execute(select(Estudiante).filter(Estudiante.id == student_id))
-    student = result.scalar_one_or_none()  # None si no existe el estudiante
+    # Verificar si el student existe
+    result = await db.execute(select(Student).filter(Student.id == student_id))
+    student = result.scalar_one_or_none()  # None si no existe el student
 
     if not student:
-        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+        raise HTTPException(status_code=404, detail="Student no encontrado")
 
-    # Verificar si el código o la cédula ya están en uso por otro estudiante
+    # Verificar si el código o la cédula ya están en uso por otro student
     filter_conditions = []
     if student_data.codigo:
-        filter_conditions.append(Estudiante.codigo == student_data.codigo)
+        filter_conditions.append(Student.codigo == student_data.codigo)
     if student_data.cedula:
-        filter_conditions.append(Estudiante.cedula == student_data.cedula)
+        filter_conditions.append(Student.cedula == student_data.cedula)
 
     if filter_conditions:
-        existing_student = await db.execute(select(Estudiante).filter(
-            *filter_conditions).filter(Estudiante.id != student_id))  # Excluir al estudiante actual
+        existing_student = await db.execute(select(Student).filter(
+            *filter_conditions).filter(Student.id != student_id))  # Excluir al student actual
         existing_student = existing_student.scalars().first()
 
         if existing_student:
             raise HTTPException(
                 status_code=400,
-                detail="El código o la cédula ya están en uso por otro estudiante."
+                detail="El código o la cédula ya están en uso por otro student."
             )
 
     # Si no hay duplicados, proceder con la actualización
@@ -85,15 +85,15 @@ async def update_student(db: AsyncSession, student_id: int, student_data: Studen
         student.numero_telefonico = student_data.numero_telefonico
     if student_data.fecha_nacimiento:
         student.fecha_nacimiento = student_data.fecha_nacimiento
-    if student_data.estudiante_graduado is not None:
-        student.estudiante_graduado = student_data.estudiante_graduado
+    if student_data.estudiante_graduado  is not None:
+        student.estudiante_graduado  = student_data.estudiante_graduado 
 
     await db.commit()
     return student
 
-# Eliminar un estudiante
+# Eliminar un student
 async def delete_student(db: AsyncSession, student_id: int):
-    result = await db.execute(select(Estudiante).filter(Estudiante.id == student_id))
+    result = await db.execute(select(Student).filter(Student.id == student_id))
     student = result.scalar_one_or_none()
 
     if not student:

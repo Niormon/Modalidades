@@ -11,7 +11,7 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-# Incluir las rutas de estudiantes
+# Incluir las rutas
 app.include_router(STUDENT_ROUTES)
 
 app.include_router(INSTITUTION_ROUTES)

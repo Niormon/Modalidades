@@ -20,5 +20,5 @@ class TrackingMode(Base):
     # Relaciones con importaciones diferidas
     modality = relationship("Modality", back_populates="tracking_modes")
     institution = relationship("Institution", back_populates="tracking_modes")
-    student = relationship("Estudiante", back_populates="tracking_modes", lazy="joined")
+    student = relationship("Student", back_populates="tracking_modes", lazy="joined")
     teacher = relationship("Teacher", back_populates="tracking_modes")
