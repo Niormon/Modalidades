@@ -4,12 +4,13 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from src.models.teacherModel import Teacher
 from src.schemas.teacherSchema import TeacherCreate, TeacherUpdate
+from uuid import UUID
 
 async def get_teachers(db: AsyncSession):
     result = await db.execute(select(Teacher))
     return result.scalars().all()
 
-async def get_teacher(db: AsyncSession, teacher_id: int):
+async def get_teacher(db: AsyncSession, teacher_id: UUID):
     teacher = await db.get(Teacher, teacher_id)
     if not teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")
@@ -31,7 +32,7 @@ async def create_teacher(db: AsyncSession, teacher: TeacherCreate):
         await db.rollback()
         raise HTTPException(status_code=400, detail="A teacher with this cedula already exists")
 
-async def update_teacher(db: AsyncSession, teacher_id: int, teacher: TeacherUpdate):
+async def update_teacher(db: AsyncSession, teacher_id: UUID, teacher: TeacherUpdate):
     db_teacher = await db.get(Teacher, teacher_id)
     if not db_teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")
@@ -50,7 +51,7 @@ async def update_teacher(db: AsyncSession, teacher_id: int, teacher: TeacherUpda
     await db.refresh(db_teacher)
     return db_teacher
 
-async def delete_teacher(db: AsyncSession, teacher_id: int):
+async def delete_teacher(db: AsyncSession, teacher_id: UUID):
     db_teacher = await db.get(Teacher, teacher_id)
     if not db_teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")

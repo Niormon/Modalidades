@@ -1,15 +1,17 @@
-from sqlalchemy import Column, Integer, Boolean, Text, ForeignKey, String, Date
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Boolean, Text, ForeignKey, String, Date
 from sqlalchemy.orm import relationship
 from src.database.database import Base
 
 class TrackingMode(Base):
     __tablename__ = "modalidad_seguimiento"
 
-    id = Column(Integer, primary_key=True, index=True)
-    modalidad_id = Column(Integer, ForeignKey("modalidad.id", ondelete="CASCADE"))
-    estudiante_id = Column(Integer, ForeignKey("estudiante.id", ondelete="CASCADE"))
-    profesor_id = Column(Integer, ForeignKey("profesor.id", ondelete="CASCADE"))
-    institucion_id = Column(Integer, ForeignKey("institucion.id", ondelete="CASCADE"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    modalidad_id = Column(UUID(as_uuid=True), ForeignKey("modalidad.id", ondelete="CASCADE"))
+    estudiante_id = Column(UUID(as_uuid=True), ForeignKey("estudiante.id", ondelete="CASCADE"))
+    profesor_id = Column(UUID(as_uuid=True), ForeignKey("profesor.id", ondelete="CASCADE"))
+    institucion_id = Column(UUID(as_uuid=True), ForeignKey("institucion.id", ondelete="CASCADE"))
     modalidad_grado_activa = Column(Boolean, nullable=False, default=True)
     descripcion = Column(Text, nullable=True)
     nombre_jurado_1 = Column(String(100), nullable=True)

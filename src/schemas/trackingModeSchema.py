@@ -1,12 +1,13 @@
+from uuid import UUID
 from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import date
 
 class TrackingModeBase(BaseModel):
-    modalidad_id: int
-    estudiante_id: int
-    profesor_id: int
-    institucion_id: int
+    modalidad_id: UUID
+    estudiante_id: UUID
+    profesor_id: UUID
+    institucion_id: UUID
     modalidad_grado_activa: Optional[bool] = True
     descripcion: Optional[str] = None
     nombre_jurado_1: str
@@ -21,13 +22,13 @@ class TrackingModeUpdate(TrackingModeBase):
     pass
 
 class TrackingModeResponse(TrackingModeBase):
-    id: int
+    id: UUID
 
     class Config:
         from_attributes = True
 
 class ModalityBase(BaseModel):
-    id: int
+    id: UUID
     modalidad: str
     descripcion: Optional[str]
 
@@ -35,7 +36,7 @@ class ModalityBase(BaseModel):
         from_attributes = True
 
 class StudentBase(BaseModel):
-    id: int
+    id: UUID
     codigo: str
     nombre: str
     cedula: str
@@ -48,7 +49,7 @@ class StudentBase(BaseModel):
         from_attributes = True
 
 class TeacherBase(BaseModel):
-    id: int
+    id: UUID
     cedula: str
     nombre: str
     correo: str
@@ -58,7 +59,7 @@ class TeacherBase(BaseModel):
         from_attributes = True
 
 class InstitutionBase(BaseModel):
-    id: int
+    id: UUID
     nombre: str
     pais_ciudad: str
     direccion: str
@@ -69,7 +70,7 @@ class InstitutionBase(BaseModel):
         from_attributes = True
 
 class TrackingModeResponseGet(BaseModel):
-    id: int
+    id: UUID
     modalidad_grado_activa: bool
     descripcion: Optional[str]
     nombre_jurado_1: Optional[str]

@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel
 from datetime import date
 from typing import Optional
@@ -17,7 +18,7 @@ class StudentCreate(BaseModel):
 
 # Esquema para la respuesta de un student
 class StudentResponse(BaseModel):
-    id: int
+    id: UUID
     codigo: str
     nombre: str
     cedula: str

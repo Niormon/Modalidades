@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from src.models.modalityModel import Modality
 from src.schemas.modalitySchema import ModalityCreate, ModalityUpdate, ModalityResponse
+from uuid import UUID
 
 async def get_modalities(db: AsyncSession):
     result = await db.execute(select(Modality))
@@ -18,7 +19,7 @@ async def get_modalities(db: AsyncSession):
         for modality in modalities
     ]
 
-async def get_modality(db: AsyncSession, modality_id: int):
+async def get_modality(db: AsyncSession, modality_id: UUID):
     modality = await db.get(Modality, modality_id)
     if not modality:
         raise HTTPException(status_code=404, detail="Modality not found")
@@ -46,7 +47,7 @@ async def create_modality(db: AsyncSession, modality: ModalityCreate):
         await db.rollback()
         raise HTTPException(status_code=400, detail="Modality already exists")
 
-async def update_modality(db: AsyncSession, modality_id: int, modality: ModalityUpdate):
+async def update_modality(db: AsyncSession, modality_id: UUID, modality: ModalityUpdate):
     db_modality = await db.get(Modality, modality_id)
     if not db_modality:
         raise HTTPException(status_code=404, detail="Modality not found")
@@ -69,7 +70,7 @@ async def update_modality(db: AsyncSession, modality_id: int, modality: Modality
         description=db_modality.descripcion,
     )
 
-async def delete_modality(db: AsyncSession, modality_id: int):
+async def delete_modality(db: AsyncSession, modality_id: UUID):
     db_modality = await db.get(Modality, modality_id)
     if not db_modality:
         raise HTTPException(status_code=404, detail="Modality not found")

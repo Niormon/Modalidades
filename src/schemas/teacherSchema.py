@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
@@ -14,7 +15,7 @@ class TeacherUpdate(TeacherBase):
     pass
 
 class TeacherResponse(TeacherBase):
-    id: int
+    id: UUID
 
     class Config:
         from_attributes = True

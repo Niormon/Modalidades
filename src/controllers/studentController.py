@@ -4,6 +4,7 @@ from sqlalchemy import update, delete
 from src.models.studentModel import Student
 from src.schemas.studentSchema import StudentCreate, StudentUpdate
 from fastapi import HTTPException
+from uuid import UUID
 
 # Crear un student
 async def create_student(db: AsyncSession, student: StudentCreate):
@@ -33,20 +34,19 @@ async def create_student(db: AsyncSession, student: StudentCreate):
     await db.commit()
     return db_student
 
-# Obtener todos los students
-async def get_students(db: AsyncSession, skip: int = 0, limit: int = 10):
-    result = await db.execute(select(Student).offset(skip).limit(limit))
-    students = result.scalars().all()
-    return students
+# Obtener estudiantes
+async def get_students(db: AsyncSession):
+    result = await db.execute(select(Student))
+    return result.scalars().all()
 
 # Obtener un student por ID
-async def get_student_by_id(db: AsyncSession, student_id: int):
+async def get_student_by_id(db: AsyncSession, student_id: UUID):
     result = await db.execute(select(Student).filter(Student.id == student_id))
     student = result.scalars().first()
     return student
 
 # Actualizar un student
-async def update_student(db: AsyncSession, student_id: int, student_data: StudentUpdate):
+async def update_student(db: AsyncSession, student_id: UUID, student_data: StudentUpdate):
     # Verificar si el student existe
     result = await db.execute(select(Student).filter(Student.id == student_id))
     student = result.scalar_one_or_none()  # None si no existe el student
@@ -92,7 +92,7 @@ async def update_student(db: AsyncSession, student_id: int, student_data: Studen
     return student
 
 # Eliminar un student
-async def delete_student(db: AsyncSession, student_id: int):
+async def delete_student(db: AsyncSession, student_id: UUID):
     result = await db.execute(select(Student).filter(Student.id == student_id))
     student = result.scalar_one_or_none()
 

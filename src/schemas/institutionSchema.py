@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
@@ -15,7 +16,7 @@ class InstitutionUpdate(InstitutionBase):
     pass
 
 class InstitutionResponse(InstitutionBase):
-    id: int
+    id: UUID
 
     class Config:
         orm_mode = True

@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel
 from typing import Optional
 
@@ -12,7 +13,7 @@ class ModalityUpdate(ModalityBase):
     pass
 
 class ModalityResponse(BaseModel):
-    id: int
+    id: UUID
     modality: str
     description: Optional[str] = None
 

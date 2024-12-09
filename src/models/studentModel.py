@@ -1,11 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, Date
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Boolean, Date
 from sqlalchemy.orm import relationship
 from src.database.database import Base
 
 class Student(Base):
     __tablename__ = 'estudiante'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     codigo = Column(String(20), unique=True, nullable=False)
     nombre = Column(String(100), nullable=False)
     cedula = Column(String(20), unique=True, nullable=False)

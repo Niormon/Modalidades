@@ -4,6 +4,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from src.models.trackingModeModel import TrackingMode
+from uuid import UUID
 
 from src.models.modalityModel import Modality
 from src.models.studentModel import Student
@@ -31,7 +32,7 @@ async def get_tracking_modes(db: AsyncSession):
 
     return tracking_modes
 
-async def get_tracking_mode(db: AsyncSession, tracking_mode_id: int):
+async def get_tracking_mode(db: AsyncSession, tracking_mode_id: UUID):
     result = await db.execute(
         select(TrackingMode)
         .options(
@@ -58,7 +59,7 @@ async def create_tracking_mode(db: AsyncSession, tracking_mode):
         await db.rollback()
         raise HTTPException(status_code=400, detail="Invalid data entry")
 
-async def update_tracking_mode(db: AsyncSession, tracking_mode_id: int, tracking_mode_data):
+async def update_tracking_mode(db: AsyncSession, tracking_mode_id: UUID, tracking_mode_data):
     # Validar que TrackingMode exista
     tracking_mode = await db.get(TrackingMode, tracking_mode_id)
     if not tracking_mode:
@@ -108,7 +109,7 @@ async def update_tracking_mode(db: AsyncSession, tracking_mode_id: int, tracking
         await db.rollback()
         raise HTTPException(status_code=500, detail="Failed to update tracking mode")
 
-async def delete_tracking_mode(db: AsyncSession, tracking_mode_id: int):
+async def delete_tracking_mode(db: AsyncSession, tracking_mode_id: UUID):
     db_tracking_mode = await db.get(TrackingMode, tracking_mode_id)
     if not db_tracking_mode:
         raise HTTPException(status_code=404, detail="Tracking mode not found")

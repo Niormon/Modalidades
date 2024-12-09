@@ -4,12 +4,13 @@ from src.models.institutionModel import Institution
 from src.schemas.institutionSchema import InstitutionCreate, InstitutionUpdate
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
+from uuid import UUID
 
 async def get_institutions(db: AsyncSession):
     result = await db.execute(select(Institution))
     return result.scalars().all()
 
-async def get_institution(db: AsyncSession, institution_id: int):
+async def get_institution(db: AsyncSession, institution_id: UUID):
     return await db.get(Institution, institution_id)
 
 async def create_institution(db: AsyncSession, institution: InstitutionCreate):
@@ -26,7 +27,7 @@ async def create_institution(db: AsyncSession, institution: InstitutionCreate):
             detail="Ya existe una institución con el mismo nombre."
         )
 
-async def update_institution(db: AsyncSession, institution_id: int, institution: InstitutionUpdate):
+async def update_institution(db: AsyncSession, institution_id: UUID, institution: InstitutionUpdate):
     try:
         # Verificar si el nombre ya existe en otra institución
         existing_institution = await db.execute(
@@ -60,7 +61,7 @@ async def update_institution(db: AsyncSession, institution_id: int, institution:
             detail="Error al actualizar la institución."
         )
 
-async def delete_institution(db: AsyncSession, institution_id: int):
+async def delete_institution(db: AsyncSession, institution_id: UUID):
     db_institution = await get_institution(db, institution_id)
     if not db_institution:
         return None
