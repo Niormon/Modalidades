@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from src.models.trackingModeModel import TrackingMode
@@ -10,11 +11,38 @@ from src.models.teacherModel import Teacher
 from src.models.institutionModel import Institution
 
 async def get_tracking_modes(db: AsyncSession):
-    result = await db.execute(select(TrackingMode))
-    return result.scalars().all()
+    result = await db.execute(
+        select(TrackingMode)
+        .options(
+            joinedload(TrackingMode.modality),
+            joinedload(TrackingMode.student),
+            joinedload(TrackingMode.teacher),
+            joinedload(TrackingMode.institution)
+        )
+    )
+    tracking_modes = result.scalars().all()
+
+    # Convertimos las fechas a formato string
+    for mode in tracking_modes:
+        if mode.fecha_inicio:
+            mode.fecha_inicio = mode.fecha_inicio.strftime('%Y-%m-%d')
+        if mode.fecha_fin:
+            mode.fecha_fin = mode.fecha_fin.strftime('%Y-%m-%d')
+
+    return tracking_modes
 
 async def get_tracking_mode(db: AsyncSession, tracking_mode_id: int):
-    tracking_mode = await db.get(TrackingMode, tracking_mode_id)
+    result = await db.execute(
+        select(TrackingMode)
+        .options(
+            joinedload(TrackingMode.modality),
+            joinedload(TrackingMode.student),
+            joinedload(TrackingMode.teacher),
+            joinedload(TrackingMode.institution)
+        )
+        .filter(TrackingMode.id == tracking_mode_id)
+    )
+    tracking_mode = result.scalar_one_or_none()
     if not tracking_mode:
         raise HTTPException(status_code=404, detail="Tracking mode not found")
     return tracking_mode
