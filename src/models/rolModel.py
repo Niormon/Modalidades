@@ -11,5 +11,6 @@ class Rol(Base):
     nombre_rol = Column(String(50), unique=True, nullable=False)
     descripcion = Column(Text, nullable=True)
 
-    # Usa el nombre de la clase como cadena para evitar la referencia circular
+    # llaves foraneas
     usuarios = relationship("Usuario", back_populates="rol", lazy="dynamic")
+    rol_permisos = relationship("RolPermiso", back_populates="rol", cascade="all, delete-orphan")
