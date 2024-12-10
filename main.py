@@ -7,6 +7,7 @@ from src.routes.trackingModeRoutes import TRACKING_MODE_ROUTES
 from src.routes.rolRoutes import ROL_ROUTER
 from src.routes.usuarioRoutes import USUARIO_ROUTER
 from src.routes.authRoutes import AUTH_ROUTER
+from src.routes.permisoRoutes import PERMISO_ROUTER
 
 app = FastAPI()
 
@@ -30,3 +31,5 @@ app.include_router(ROL_ROUTER)
 app.include_router(USUARIO_ROUTER)
 
 app.include_router(AUTH_ROUTER)
+
+app.include_router(PERMISO_ROUTER)
