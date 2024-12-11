@@ -20,3 +20,11 @@ class UsuarioResponse(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+class UsuarioUpdate(BaseModel):
+    nombre_usuario: Optional[str] = None
+    contrasena: Optional[str] = None
+    id_rol: Optional[UUID] = None
+
+    class Config:
+        from_attributes = True

@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.future import select
 from sqlalchemy import delete
 from fastapi import HTTPException
 from passlib.context import CryptContext
 from src.models.usuarioModel import Usuario
-from src.schemas.usuarioSchema import UsuarioCreate
+from src.schemas.usuarioSchema import UsuarioCreate, UsuarioUpdate
 from uuid import UUID
 
 # Configuración de cifrado
@@ -64,6 +64,42 @@ async def get_user_by_id(db: AsyncSession, user_id: UUID):
         return user
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener usuario: {str(e)}")
+
+# Actualisar usuario
+
+async def update_usuario(db: AsyncSession, usuario_id: str, usuario_data: UsuarioUpdate):
+    try:
+        # Buscar el usuario por ID
+        result = await db.execute(select(Usuario).filter(Usuario.id == usuario_id))
+        usuario = result.scalar()
+
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        # Validar que el nuevo nombre de usuario no esté en uso por otro usuario
+        if usuario_data.nombre_usuario and usuario_data.nombre_usuario != usuario.nombre_usuario:
+            existing_user = await db.execute(
+                select(Usuario).filter(Usuario.nombre_usuario == usuario_data.nombre_usuario)
+            )
+            if existing_user.scalar():
+                raise HTTPException(status_code=400, detail="El nombre de usuario ya está en uso")
+
+        # Actualizar campos si están presentes en los datos de entrada
+        if usuario_data.nombre_usuario:
+            usuario.nombre_usuario = usuario_data.nombre_usuario
+
+        if usuario_data.contrasena:
+            usuario.contrasena_cifrada = pwd_context.hash(usuario_data.contrasena)
+
+        if usuario_data.id_rol:
+            usuario.id_rol = usuario_data.id_rol
+
+        await db.commit()
+        await db.refresh(usuario)
+        return usuario
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al actualizar el usuario: {str(e)}")
 
 # Eliminar usuario
 async def delete_user(db: AsyncSession, user_id: UUID):
