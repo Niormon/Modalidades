@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.database import get_db
+from src.utils.authPerm import permiso_requerido
 from src.schemas.trackingModeSchema import TrackingModeCreate, TrackingModeUpdate, TrackingModeResponse, TrackingModeResponseGet
 from uuid import UUID
 from src.controllers.trackingModeController import (
@@ -14,21 +15,31 @@ from src.controllers.trackingModeController import (
 TRACKING_MODE_ROUTES = APIRouter()
 
 @TRACKING_MODE_ROUTES.get("/tracking_modes/", response_model=list[TrackingModeResponseGet])
-async def list_tracking_modes(db: AsyncSession = Depends(get_db)):
+async def list_tracking_modes(db: AsyncSession = Depends(get_db),
+    _: None = Depends(permiso_requerido("Consultar"))
+):
     return await get_tracking_modes(db)
 
 @TRACKING_MODE_ROUTES.get("/tracking_modes/{tracking_mode_id}", response_model=TrackingModeResponseGet)
-async def get_tracking_mode_by_id(tracking_mode_id: UUID, db: AsyncSession = Depends(get_db)):
+async def get_tracking_mode_by_id(tracking_mode_id: UUID, db: AsyncSession = Depends(get_db),
+    _: None = Depends(permiso_requerido("Consultar"))
+):
     return await get_tracking_mode(db, tracking_mode_id)
 
 @TRACKING_MODE_ROUTES.post("/tracking_modes/", response_model=TrackingModeResponse)
-async def create_tracking_mode_endpoint(tracking_mode: TrackingModeCreate, db: AsyncSession = Depends(get_db)):
+async def create_tracking_mode_endpoint(tracking_mode: TrackingModeCreate, db: AsyncSession = Depends(get_db),
+    _: None = Depends(permiso_requerido("Operar"))
+):
     return await create_tracking_mode(db, tracking_mode)
 
 @TRACKING_MODE_ROUTES.put("/tracking_modes/{tracking_mode_id}", response_model=TrackingModeResponse)
-async def update_tracking_mode_endpoint(tracking_mode_id: UUID, tracking_mode: TrackingModeUpdate, db: AsyncSession = Depends(get_db)):
+async def update_tracking_mode_endpoint(tracking_mode_id: UUID, tracking_mode: TrackingModeUpdate, db: AsyncSession = Depends(get_db),
+    _: None = Depends(permiso_requerido("Operar"))
+):
     return await update_tracking_mode(db, tracking_mode_id, tracking_mode)
 
 @TRACKING_MODE_ROUTES.delete("/tracking_modes/{tracking_mode_id}")
-async def delete_tracking_mode_endpoint(tracking_mode_id: UUID, db: AsyncSession = Depends(get_db)):
+async def delete_tracking_mode_endpoint(tracking_mode_id: UUID, db: AsyncSession = Depends(get_db),
+    _: None = Depends(permiso_requerido("Operar"))
+):
     return await delete_tracking_mode(db, tracking_mode_id)
