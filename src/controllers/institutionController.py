@@ -65,6 +65,7 @@ async def delete_institution(db: AsyncSession, institution_id: UUID):
     db_institution = await get_institution(db, institution_id)
     if not db_institution:
         return None
+    
     await db.delete(db_institution)
     await db.commit()
-    return db_institution
+    return {"message": "Institution deleted successfully"}
