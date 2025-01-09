@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.routes.studentRoutes import STUDENT_ROUTES
 from src.routes.institutionRoutes import INSTITUTION_ROUTES
 from src.routes.modalityRoutes import MODALITY_ROUTES
@@ -36,3 +37,11 @@ app.include_router(AUTH_ROUTER)
 app.include_router(PERMISO_ROUTER)
 
 app.include_router(ROL_PERMISO_ROUTER)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
