@@ -6,6 +6,8 @@ from src.database.database import get_db
 from src.schemas.tokenSchema import LoginRequest, TokenResponse, LogoutResponse
 from src.controllers.authController import login, logout
 from src.utils.settings import settings
+from src.utils.tokenUtils import verify_token
+
 
 AUTH_ROUTER = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -29,3 +31,8 @@ async def logout_route(
         return await logout(db, token, username)
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
+    
+@AUTH_ROUTER.get("/verify-token/")
+async def verify_token_endpoint(payload: dict = Depends(verify_token)):
+    # Retornar el payload decodificado como confirmación
+    return {"status": "valid", "payload": payload}
