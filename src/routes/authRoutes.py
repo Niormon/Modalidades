@@ -7,6 +7,7 @@ from src.schemas.tokenSchema import LoginRequest, TokenResponse, LogoutResponse
 from src.controllers.authController import login, logout
 from src.utils.settings import settings
 from src.utils.tokenUtils import verify_token
+from src.utils.authPerm import permiso_requerido
 
 
 AUTH_ROUTER = APIRouter()
@@ -36,3 +37,10 @@ async def logout_route(
 async def verify_token_endpoint(payload: dict = Depends(verify_token)):
     # Retornar el payload decodificado como confirmación
     return {"status": "valid", "payload": payload}
+
+@AUTH_ROUTER.get("/permissions/{nombre_permiso}/", dependencies=[Depends(permiso_requerido)])
+async def verificar_permiso(nombre_permiso: str):
+    """
+    Verifica si el usuario tiene un permiso específico.
+    """
+    return {"status": "success", "message": f"Tienes el permiso '{nombre_permiso}'"}
